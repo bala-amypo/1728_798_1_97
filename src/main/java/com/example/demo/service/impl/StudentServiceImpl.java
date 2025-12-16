@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.Student;
+import com.example.demo.exception.DuplicateStudentException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.service.StudentService;
@@ -11,31 +12,28 @@ import java.util.List;
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    private final StudentRepository repository;
+    private final StudentRepository studentRepository;
 
-    public StudentServiceImpl(StudentRepository repository) {
-        this.repository = repository;
+    public StudentServiceImpl(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
     }
 
     @Override
-    public Student createStudent(Student student) {
-        return repository.save(student);
-    }
-
-    @Override
-    public Student getStudentById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with id " + id));
+    public Student addStudent(Student student) {
+        if (studentRepository.existsByEmail(student.getEmail())) {
+            throw new DuplicateStudentException("Student email exists");
+        }
+        return studentRepository.save(student);
     }
 
     @Override
     public List<Student> getAllStudents() {
-        return repository.findAll();
+        return studentRepository.findAll();
     }
 
     @Override
-    public void deleteStudent(Long id) {
-        Student student = getStudentById(id);
-        repository.delete(student);
+    public Student findById(Long id) {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
     }
 }
