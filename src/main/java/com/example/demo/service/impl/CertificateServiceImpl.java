@@ -1,47 +1,63 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.Certificate;
+import com.example.demo.entity.Student;
+import com.example.demo.entity.CertificateTemplate;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.CertificateRepository;
+import com.example.demo.repository.StudentRepository;
+import com.example.demo.repository.CertificateTemplateRepository;
 import com.example.demo.service.CertificateService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class CertificateServiceImpl implements CertificateService {
 
-    private final CertificateRepository repository;
+    private final CertificateRepository certificateRepository;
+    private final StudentRepository studentRepository;
+    private final CertificateTemplateRepository templateRepository;
 
-    public CertificateServiceImpl(CertificateRepository repository) {
-        this.repository = repository;
+    public CertificateServiceImpl(
+            CertificateRepository certificateRepository,
+            StudentRepository studentRepository,
+            CertificateTemplateRepository templateRepository) {
+        this.certificateRepository = certificateRepository;
+        this.studentRepository = studentRepository;
+        this.templateRepository = templateRepository;
     }
 
     @Override
-    public Certificate createCertificate(Certificate certificate) {
-        return repository.save(certificate);
+    public Certificate generateCertificate(Long studentId, Long templateId) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+
+        CertificateTemplate template = templateRepository.findById(templateId)
+                .orElseThrow(() -> new ResourceNotFoundException("Template not found"));
+
+        Certificate certificate = new Certificate();
+        certificate.setStudent(student);
+        certificate.setTemplate(template);
+        certificate.setVerificationCode(UUID.randomUUID().toString());
+
+        return certificateRepository.save(certificate);
     }
 
     @Override
-    public Certificate getCertificateById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Certificate not found with id " + id));
+    public Certificate getCertificate(Long certificateId) {
+        return certificateRepository.findById(certificateId)
+                .orElseThrow(() -> new ResourceNotFoundException("Certificate not found"));
     }
 
     @Override
-    public List<Certificate> getAllCertificates() {
-        return repository.findAll();
+    public Certificate findByVerificationCode(String code) {
+        return certificateRepository.findByVerificationCode(code).orElse(null);
     }
 
     @Override
-    public void deleteCertificate(Long id) {
-        Certificate certificate = getCertificateById(id);
-        repository.delete(certificate);
-    }
-
-    @Override
-    public boolean verifyCertificate(String certificateNumber) {
-        return repository.existsByCertificateNumber(certificateNumber);
+    public List<Certificate> findByStudentId(Long studentId) {
+        return certificateRepository.findByStudentId(studentId);
     }
 }
