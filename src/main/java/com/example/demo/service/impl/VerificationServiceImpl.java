@@ -1,40 +1,46 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 import com.example.demo.entity.VerificationLog;
 import com.example.demo.repository.VerificationLogRepository;
+import com.example.demo.service.VerificationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class VerificationServiceImpl implements VerificationService {
 
     private final VerificationLogRepository verificationLogRepository;
 
-    // Constructor injection
+    @Autowired
     public VerificationServiceImpl(VerificationLogRepository verificationLogRepository) {
         this.verificationLogRepository = verificationLogRepository;
     }
 
     @Override
     public VerificationLog verifyCertificate(String verificationCode, String clientIp) {
-        // Verify the certificate by verification code (you might need a certificate repository to validate this)
-        // For now, let's assume that we're just logging the verification attempt and returning a log entry.
-
-        // Creating and saving the verification log (This assumes that the verification process is done here)
+        // Create a new VerificationLog
         VerificationLog log = new VerificationLog();
-        log.setVerificationCode(verificationCode);
-        log.setClientIp(clientIp);
-        log.setVerified(true); // This would depend on the logic of the certificate verification (set to true for success)
+        log.setStatus("Verified");  // You can update this status based on your logic
+        log.setIpAddress(clientIp); // Set the client IP
+        log.setVerifiedAt(LocalDateTime.now());  // Set the verified timestamp (handled by @PrePersist in the entity)
 
-        // Save the log entry
+        // You can implement your logic here to retrieve the certificate by verificationCode
+        // Assuming you retrieve a certificate by its verification code (you would need a certificateRepository)
+        // Example (use actual code to find certificate):
+        // Certificate certificate = certificateRepository.findByVerificationCode(verificationCode);
+        
+        // For now, assume you have the certificate already:
+        // log.setCertificate(certificate);
+        
+        // Save the verification log
         return verificationLogRepository.save(log);
     }
 
     @Override
     public List<VerificationLog> getLogsByCertificate(Long certificateId) {
-        // Retrieve all verification logs associated with a specific certificate ID
-        return verificationLogRepository.findByCertificateId(certificateId);
+        return verificationLogRepository.findByCertificateId(certificateId);  // Fetch logs by certificate ID
     }
 }
