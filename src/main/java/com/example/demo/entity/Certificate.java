@@ -21,4 +21,6 @@ public class Certificate{
     @JoinColumn
     private CertificateTemplate template;
 
+    @Column
+
 }
