@@ -29,7 +29,7 @@ public class Certificate{
     @Column(nullable = false)
     private String qrCodeUrl;
 
-    @Colum(nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String verificationCode;
 
 }
