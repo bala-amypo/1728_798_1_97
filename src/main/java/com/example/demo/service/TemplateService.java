@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.enitity.CertificateTemplate;
+import com.example.demo.entity.CertificateTemplate;
 import java.util.List;
 
 public interface TemplateService {
