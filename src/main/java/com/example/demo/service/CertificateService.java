@@ -5,5 +5,6 @@ import com.example.demo.enitity.Certificate;
 public interface CertificateService {
     Certificate generateCertificate(Long studentId, Long templateId);
     Certificate getCertificate(Long certificateId);
-    Certificate findByVerificationCode
+    Certificate findByVerificationCode(String Code);
+    List<Certificate> findByStudentId(Long studentId);
 }
