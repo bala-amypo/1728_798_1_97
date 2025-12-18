@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class Certificate{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne

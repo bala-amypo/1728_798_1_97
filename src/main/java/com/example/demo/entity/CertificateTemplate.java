@@ -13,7 +13,7 @@ import lombok.*;
 public class CertificateTemplate{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false, unique = true)

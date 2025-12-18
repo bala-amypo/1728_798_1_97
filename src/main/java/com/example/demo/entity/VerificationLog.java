@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class VerificationLog{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne
