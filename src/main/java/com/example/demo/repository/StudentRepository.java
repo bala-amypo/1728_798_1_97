@@ -1,7 +1,7 @@
 package com.example.demo.repository;
 
-import spring.frameworks.data.jpa.repository.JpaRepostitory;
-import spring.frameworks.stereotype.Repository;
+import spring.framework.data.jpa.repository.JpaRepostitory;
+import spring.framework.stereotype.Repository;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long>{
