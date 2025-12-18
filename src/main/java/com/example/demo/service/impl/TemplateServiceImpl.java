@@ -14,6 +14,7 @@ public class TemplateServiceImpl implements TemplateService {
 
     private final CertificateTemplateRepository certificateTemplateRepository;
 
+    // Constructor injection
     @Autowired
     public TemplateServiceImpl(CertificateTemplateRepository certificateTemplateRepository) {
         this.certificateTemplateRepository = certificateTemplateRepository;
@@ -21,7 +22,7 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public CertificateTemplate addTemplate(CertificateTemplate template) throws Exception {
-        // Check if a template with the same name already exists
+        // Check if the template already exists by templateName (unique constraint)
         if (certificateTemplateRepository.existsByTemplateName(template.getTemplateName())) {
             throw new Exception("Template with the name " + template.getTemplateName() + " already exists");
         }
@@ -30,24 +31,16 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public List<CertificateTemplate> getAllTemplates() {
+        // Retrieve all certificate templates
         return certificateTemplateRepository.findAll();
     }
 
     @Override
     public CertificateTemplate findById(Long id) throws Exception {
+        // Find a template by its ID
         Optional<CertificateTemplate> template = certificateTemplateRepository.findById(id);
         if (template.isEmpty()) {
             throw new Exception("Template with ID " + id + " not found");
-        }
-        return template.get();
-    }
-
-    @Override
-    public CertificateTemplate findByTemplateName(String templateName) throws Exception {
-        // Fetch template by name
-        Optional<CertificateTemplate> template = certificateTemplateRepository.findByTemplateName(templateName);
-        if (template.isEmpty()) {
-            throw new Exception("Template with name " + templateName + " not found");
         }
         return template.get();
     }
