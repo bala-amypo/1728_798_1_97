@@ -21,6 +21,13 @@ public class Certificate{
     @JoinColumn
     private CertificateTemplate template;
 
-    @Column
+    @Column(nullable = false)
+    private LocalDate issuedDate;
+
+    @Column(nullable = false)
+    private String qrCodeUrl;
+
+    @Colum(nullable = false, unique = true)
+    private String verificationCode;
 
 }
