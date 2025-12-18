@@ -29,8 +29,8 @@ public class VerificationLog{
     @Column(nullable = false)
     private String ipAddress;
 
-    // @PrePersist
-    // protected void onCreate() {
-    //     this.verifiedAt = LocalDateTime.now();
-    // }
+    @PrePersist
+    protected void onCreate() {
+        this.verifiedAt = LocalDateTime.now();
+    }
 }
