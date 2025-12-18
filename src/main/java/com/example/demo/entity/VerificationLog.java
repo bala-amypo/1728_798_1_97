@@ -17,7 +17,7 @@ public class VerificationLog{
     private Long id;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "certificate_id")
     private Certificate certificate;
 
     @Column(nullable = false)

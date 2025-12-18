@@ -17,11 +17,11 @@ public class Certificate{
     private Long id;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "template_id")
     private CertificateTemplate template;
 
     @Column(nullable = false)
