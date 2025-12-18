@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.enitity.Certificate;
+import com.example.demo.enitity.*;
+import java.util.List;
 
 public interface CertificateService {
     Certificate generateCertificate(Long studentId, Long templateId);
