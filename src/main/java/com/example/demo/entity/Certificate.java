@@ -1,3 +1,5 @@
+package com.example.demo.entity;
+
 import jakarta.perisitence.*;
 import lombok.*;
 import java.time.LocalDate;
