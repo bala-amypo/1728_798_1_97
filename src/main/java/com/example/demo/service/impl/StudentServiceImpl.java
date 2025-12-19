@@ -1,27 +1,26 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 import com.example.demo.entity.Student;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.StudentRepository;
+import com.example.demo.service.StudentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
 
-    public StudentServiceImpl(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
-    }
-
     @Override
-    public Student addStudent(Student student) throws Exception {
-        // Check if email already exists
-        if (studentRepository.existsByEmail(student.getEmail())) {
-            throw new Exception("Student email exists");
-        }
+    public Student addStudent(Student student) {
+        studentRepository.findByEmail(student.getEmail())
+                .ifPresent(s -> { throw new RuntimeException("Student email exists"); });
+        studentRepository.findByRollNumber(student.getRollNumber())
+                .ifPresent(s -> { throw new RuntimeException("Student email exists"); });
         return studentRepository.save(student);
     }
 
@@ -31,11 +30,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student findById(Long id) throws Exception {
-        Optional<Student> student = studentRepository.findById(id);
-        if (student.isEmpty()) {
-            throw new Exception("Student not found");
-        }
-        return student.get();
+    public Student findById(Long id) {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
     }
 }

@@ -4,7 +4,7 @@ import com.example.demo.entity.CertificateTemplate;
 import java.util.List;
 
 public interface TemplateService {
-    CertificateTemplate addTemplate(CertificateTemplate template) throws Exception;
+    CertificateTemplate addTemplate(CertificateTemplate template);
     List<CertificateTemplate> getAllTemplates();
-    CertificateTemplate findById(Long id) throws Exception;
+    CertificateTemplate findById(Long id);
 }

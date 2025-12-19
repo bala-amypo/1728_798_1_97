@@ -3,9 +3,8 @@ package com.example.demo.service;
 import com.example.demo.entity.Student;
 import java.util.List;
 
-
 public interface StudentService {
-    Student addStudent(Student student) throws Exception;
+    Student addStudent(Student student);
     List<Student> getAllStudents();
-    Student findById(Long Id) throws Exception;
+    Student findById(Long id);
 }
