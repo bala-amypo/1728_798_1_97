@@ -5,7 +5,7 @@ import com.example.demo.service.VerificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest; 
 import java.util.List;
 
 @RestController
