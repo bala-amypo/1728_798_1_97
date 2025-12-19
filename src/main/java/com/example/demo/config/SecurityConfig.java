@@ -1,6 +1,6 @@
 package com.example.demo.config;
 
-import com.example.demo.security.JwtFilter;
+//import com.example.demo.security.JwtFilter;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,11 +21,11 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    private final JwtFilter jwtFilter;
+    // private final JwtFilter jwtFilter;
 
-    public SecurityConfig(JwtFilter jwtFilter) {
-        this.jwtFilter = jwtFilter;
-    }
+    // public SecurityConfig(JwtFilter jwtFilter) {
+    //     this.jwtFilter = jwtFilter;
+    // }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -48,7 +48,7 @@ public class SecurityConfig {
             );
 
         // JWT filter before UsernamePasswordAuthenticationFilter
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+       // http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
