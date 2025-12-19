@@ -8,7 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface StudentRepository extends JpaRepository<Student, Long> {
     boolean existsByEmail(String email);
 
-     public void deleteAllStudents() {
-        studentRepository.deleteAll();  // This deletes all rows
-    }
+    
 }

@@ -28,9 +28,5 @@ public class StudentController {
         return studentService.getAllStudents();
     }
 
-    @DeleteMapping("/all")
-    public String deleteAllStudents() {
-        studentService.deleteAllStudents();
-        return "All students deleted!";
-    }
+    
 }
