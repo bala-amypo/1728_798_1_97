@@ -13,6 +13,8 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
+                .servers(List.of(
+                        new Server().url("https://9206.408procr.amypo.ai/")))
                 .info(new Info().title("Digital Certificate Generator API").version("1.0"))
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .components(new io.swagger.v3.oas.models.Components()
@@ -23,3 +25,5 @@ public class SwaggerConfig {
                                         .bearerFormat("JWT")));
     }
 }
+
+
