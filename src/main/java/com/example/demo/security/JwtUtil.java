@@ -1,6 +1,7 @@
 package com.example.demo.security;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JwtUtil {
 
-    private final String secret = "MyJwtSecretKey12345"; // same as properties
+    private final String secret = Keys.secretKeyFor(SignatureAlgorithm.HS256); // same as properties
     private final long expirationMs = 86400000; // 1 day
 
     public String generateToken(Map<String, Object> claims, String subject) {
