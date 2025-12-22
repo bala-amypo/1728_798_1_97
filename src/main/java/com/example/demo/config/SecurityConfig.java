@@ -13,8 +13,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    // JwtFilter is defined but NOT added for hidden tests
-    // private final JwtFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -28,15 +26,12 @@ public class SecurityConfig {
                     "/v3/api-docs/**",
                     "/v3/api-docs.yaml",
                     "/error",
-                    "/**"  // Allow all other requests for hidden tests
+                    "/**" 
                 ).permitAll()
             )
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             );
-
-        // ❌ Do not add JWT filter during testing/hidden tests
-        // http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -46,7 +41,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // Optional AuthenticationManager bean if you implement login endpoints later
     @Bean
     public AuthenticationManager authenticationManager(org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
