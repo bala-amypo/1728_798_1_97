@@ -14,10 +14,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JwtUtil {
 
-    private final String secret = "MySuperSecureJWTSecretKeyThatIsAtLeast32Chars"; // same as properties
-    private final long expirationMs = 86400000; // 1 day
+    private final String secret = "MySuperSecureJWTSecretKeyThatIsAtLeast32Chars";
+    private final long expirationMs = 86400000;
 
-    // Convert secret string to proper HS256 key
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
