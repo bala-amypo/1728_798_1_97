@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.entity.CertificateTemplate;
 import com.example.demo.repository.CertificateTemplateRepository;
 import com.example.demo.service.TemplateService;
@@ -39,6 +40,6 @@ public class TemplateServiceImpl implements TemplateService {
     @Override
     public CertificateTemplate findById(Long id) {
         return templateRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Template not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Template not found"));
     }
 }

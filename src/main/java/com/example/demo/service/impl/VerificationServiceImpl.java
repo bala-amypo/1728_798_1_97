@@ -1,5 +1,7 @@
 package com.example.demo.service.impl;
 
+
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.entity.Certificate;
 import com.example.demo.entity.VerificationLog;
 import com.example.demo.repository.CertificateRepository;
@@ -38,7 +40,7 @@ public class VerificationServiceImpl implements VerificationService {
     @Override
     public List<VerificationLog> getLogsByCertificate(Long certificateId) {
         certificateRepository.findById(certificateId)
-                .orElseThrow(() -> new RuntimeException("Certificate not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Certificate not found"));
         return logRepository.findByCertificateId(certificateId);
     }
 }
