@@ -139,17 +139,15 @@
 				</dependencies>
 			</plugin>
 
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <version>3.11.0</version>
-    <configuration>
-        <!-- main code -->
-        <release>17</release>
-
-        <!-- tests ONLY -->
-        <testRelease>8</testRelease>
-    </configuration>
+			<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-compiler-plugin</artifactId>
+  <version>3.11.0</version> <!-- latest version -->
+  <configuration>
+    <source>17</source>
+    <target>17</target>
+    <release>17</release>
+  </configuration>
 </plugin>
 
 
