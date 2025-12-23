@@ -16,7 +16,7 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .servers(List.of(
-                        new Server().url("https://9094.408procr.amypo.ai/")))
+                        new Server().url("https://9264.pro604cr.amypo.ai/")))
                 .info(new Info().title("Digital Certificate Generator API").version("1.0"))
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .components(new io.swagger.v3.oas.models.Components()
