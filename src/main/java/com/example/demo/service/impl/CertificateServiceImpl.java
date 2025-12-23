@@ -33,7 +33,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public Certificate generateCertificate(Long studentId, Long templateId) {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
         CertificateTemplate template = templateRepository.findById(templateId)
                 .orElseThrow(() -> new RuntimeException("Template not found"));
 
