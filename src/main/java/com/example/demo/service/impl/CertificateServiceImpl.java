@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.entity.Certificate;
 import com.example.demo.entity.CertificateTemplate;
 import com.example.demo.entity.Student;
@@ -35,7 +36,7 @@ public class CertificateServiceImpl implements CertificateService {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
         CertificateTemplate template = templateRepository.findById(templateId)
-                .orElseThrow(() -> new RuntimeException("Template not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Template not found"));
 
         String verificationCode = "VC-" + UUID.randomUUID().toString();
 
@@ -61,13 +62,13 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public Certificate findByVerificationCode(String code) {
         return certificateRepository.findByVerificationCode(code)
-                .orElseThrow(() -> new RuntimeException("Certificate not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Certificate not found"));
     }
 
     @Override
     public List<Certificate> findByStudentId(Long studentId) {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
         return certificateRepository.findByStudent(student);
     }
 
