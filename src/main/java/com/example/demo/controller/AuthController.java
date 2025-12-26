@@ -1,60 +1,61 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.AuthResponse;
+import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
-import com.example.demo.security.JwtUtil;
 import com.example.demo.service.impl.UserServiceImpl;
-import org.springframework.http.HttpStatus;
+import com.example.demo.security.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private final UserServiceImpl userService;
     private final JwtUtil jwtUtil;
 
-    public AuthController(UserServiceImpl userService, JwtUtil jwtUtil) {
-        this.userService = userService;
-        this.jwtUtil = jwtUtil;
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        user.setRole(request.getRole());
+
+        User savedUser = userService.register(user);
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("email", savedUser.getEmail());
+        claims.put("role", savedUser.getRole());
+
+        String token = jwtUtil.generateToken(claims, savedUser.getEmail());
+
+        AuthResponse response = new AuthResponse(token, savedUser.getId(), savedUser.getEmail(), savedUser.getRole());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-        User user = null;
-        try {
-            user = userService.findByEmail(request.getEmail());
-        } catch (Exception ignored) {}
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+        User user = userService.findByEmail(request.getEmail());
 
-        Optional<User> userOpt = Optional.ofNullable(user);
-
-        if (userOpt.isEmpty() || !new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder()
-                .matches(request.getPassword(), userOpt.get().getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        if (!userService.getPasswordEncoder().matches(request.getPassword(), user.getPassword())) {
+            return ResponseEntity.status(401).build(); // Invalid credentials
         }
 
-        user = userOpt.get();
-        String token = jwtUtil.generateToken(
-                java.util.Map.of("email", user.getEmail(), "role", user.getRole()),
-                user.getEmail()
-        );
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("email", user.getEmail());
+        claims.put("role", user.getRole());
 
-        return ResponseEntity.ok(java.util.Map.of("token", token));
-    }
+        String token = jwtUtil.generateToken(claims, user.getEmail());
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody AuthRequest request) {
-        User user = new User();
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-        user.setRole("STAFF"); // default role
-
-        // use service's register method
-        User saved = userService.register(user);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        AuthResponse response = new AuthResponse(token, user.getId(), user.getEmail(), user.getRole());
+        return ResponseEntity.ok(response);
     }
 }
