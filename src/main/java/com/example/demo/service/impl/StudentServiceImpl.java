@@ -1,6 +1,4 @@
 package com.example.demo.service.impl;
-
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.entity.Student;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.StudentRepository;
@@ -21,7 +19,7 @@ public class StudentServiceImpl implements StudentService {
         studentRepository.findByEmail(student.getEmail())
                 .ifPresent(s -> { throw new RuntimeException("Student email exists"); });
         studentRepository.findByRollNumber(student.getRollNumber())
-                .ifPresent(s -> { throw new RuntimeException("Student email exists"); });
+                .ifPresent(s -> { throw new RuntimeException("Student Roll No. exists"); });
         return studentRepository.save(student);
     }
 
