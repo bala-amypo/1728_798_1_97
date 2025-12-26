@@ -2,26 +2,24 @@ package com.example.demo.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
 
-@Component
 public class JwtUtil {
 
-    private final String secret;
-    private final long expirationMs;
+    private String secret;
+    private long expirationMs;
 
-    // No-arg constructor for Spring
+    // No-args constructor for Spring component injection
     public JwtUtil() {
         this.secret = "MySuperSecureJWTSecretKeyThatIsAtLeast32Chars";
-        this.expirationMs = 86400000;
+        this.expirationMs = 86400000L;
     }
 
-    // Constructor to satisfy your test
+    // Constructor to satisfy test: JwtUtil(String, long)
     public JwtUtil(String secret, long expirationMs) {
         this.secret = secret;
         this.expirationMs = expirationMs;
