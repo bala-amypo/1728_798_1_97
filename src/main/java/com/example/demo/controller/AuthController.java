@@ -17,7 +17,6 @@ public class AuthController {
     private final UserServiceImpl userService;
     private final JwtUtil jwtUtil;
 
-    // Constructor matches the test: takes service + jwtUtil
     public AuthController(UserServiceImpl userService, JwtUtil jwtUtil) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
@@ -25,13 +24,19 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-        Optional<User> userOpt = userService.findByEmail(request.getEmail());
+        User user = null;
+        try {
+            user = userService.findByEmail(request.getEmail());
+        } catch (Exception ignored) {}
 
-        if (userOpt.isEmpty() || !userOpt.get().getPassword().equals(request.getPassword())) {
+        Optional<User> userOpt = Optional.ofNullable(user);
+
+        if (userOpt.isEmpty() || !new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder()
+                .matches(request.getPassword(), userOpt.get().getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
 
-        User user = userOpt.get();
+        user = userOpt.get();
         String token = jwtUtil.generateToken(
                 java.util.Map.of("email", user.getEmail(), "role", user.getRole()),
                 user.getEmail()
@@ -46,7 +51,10 @@ public class AuthController {
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
         user.setRole("STAFF"); // default role
-        userService.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+
+        // use service's register method
+        User saved = userService.register(user);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 }
