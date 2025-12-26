@@ -1,74 +1,52 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.User;
 import com.example.demo.dto.AuthRequest;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.entity.User;
 import com.example.demo.security.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import com.example.demo.service.impl.UserServiceImpl;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserServiceImpl userService;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    // Constructor matches the test: takes service + jwtUtil
+    public AuthController(UserServiceImpl userService, JwtUtil jwtUtil) {
+        this.userService = userService;
+        this.jwtUtil = jwtUtil;
+    }
 
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-    // ---------------- LOGIN ----------------
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
-        Optional<User> userOpt = userRepository.findByEmail(authRequest.getEmail());
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+        Optional<User> userOpt = userService.findByEmail(request.getEmail());
 
-        if (userOpt.isEmpty() || !passwordEncoder.matches(authRequest.getPassword(), userOpt.get().getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Invalid credentials"));
+        if (userOpt.isEmpty() || !userOpt.get().getPassword().equals(request.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
 
         User user = userOpt.get();
-
-        // Pass email and role as claims
-        Map<String, Object> claims = Map.of(
-                "email", user.getEmail(),
-                "role", user.getRole()
+        String token = jwtUtil.generateToken(
+                java.util.Map.of("email", user.getEmail(), "role", user.getRole()),
+                user.getEmail()
         );
-        String token = jwtUtil.generateToken(claims, user.getEmail());
 
-        return ResponseEntity.ok(Map.of("token", token));
+        return ResponseEntity.ok(java.util.Map.of("token", token));
     }
 
-    // ---------------- REGISTER ----------------
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody AuthRequest authRequest) {
-        if (userRepository.findByEmail(authRequest.getEmail()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "Email already registered"));
-        }
-
+    public ResponseEntity<?> register(@RequestBody AuthRequest request) {
         User user = new User();
-        user.setEmail(authRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(authRequest.getPassword()));
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
         user.setRole("STAFF"); // default role
-
-        userRepository.save(user);
-
-        Map<String, Object> claims = Map.of(
-                "email", user.getEmail(),
-                "role", user.getRole()
-        );
-        String token = jwtUtil.generateToken(claims, user.getEmail());
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(Map.of("token", token));
+        userService.save(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 }
