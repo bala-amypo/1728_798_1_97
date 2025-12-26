@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,28 +37,20 @@ public class AuthController {
                 .build();
         return userService.register(user);
     }
+
 @PostMapping("/login")
-public AuthResponse login(@RequestBody AuthRequest request) {
-    try {
-        User user = userService.findByEmail(request.getEmail());
+public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+    Optional<User> userOpt = userService.findByEmail(request.getEmail());
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
-        }
-
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", user.getId());
-        claims.put("email", user.getEmail());
-        claims.put("role", user.getRole());
-
-        String token = jwtUtil.generateToken(claims, user.getEmail());
-
-        return new AuthResponse(token, user.getId(), user.getEmail(), user.getRole());
-
-    } catch (ResourceNotFoundException e) {
-        // User not found → treat as invalid login
-        throw new RuntimeException("Invalid credentials");
+    if (userOpt.isEmpty() || !passwordEncoder.matches(request.getPassword(), userOpt.get().getPassword())) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body(Map.of("error", "Invalid credentials"));
     }
+
+    User user = userOpt.get();
+    String token = jwtService.generateToken(user);
+
+    return ResponseEntity.ok(Map.of("token", token));
 }
 
 }
