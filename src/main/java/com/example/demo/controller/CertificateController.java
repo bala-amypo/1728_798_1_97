@@ -21,7 +21,7 @@ public class CertificateController {
     }
 
     @GetMapping("/{certificateId}")
-    public Certificate getCertificate(@PathVariable Long certificateId) {
+    public Certificate get(@PathVariable Long certificateId) {
         return certificateService.getCertificate(certificateId);
     }
 
