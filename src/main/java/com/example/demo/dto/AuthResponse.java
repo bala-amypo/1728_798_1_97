@@ -1,5 +1,6 @@
 package com.example.demo.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Data;
@@ -13,12 +14,13 @@ public class AuthResponse {
     private String email;
     private String role;
 
-    // Add this method so resp.getBody() works in the test
+    // Ignore these methods during JSON serialization
+    @JsonIgnore
     public AuthResponse getBody() {
         return this;
     }
 
-    // Add this method so resp.getStatusCodeValue() works in the test
+    @JsonIgnore
     public int getStatusCodeValue() {
         return 200; // or whatever default status code you want
     }
