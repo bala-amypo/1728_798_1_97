@@ -27,8 +27,8 @@ import java.io.ByteArrayOutputStream;
 @RequiredArgsConstructor
 public class CertificateServiceImpl implements CertificateService {
 
-    private final StudentRepository studentRepository;
     private final CertificateRepository certificateRepository;
+    private final StudentRepository studentRepository;
     private final CertificateTemplateRepository templateRepository;
 
 
