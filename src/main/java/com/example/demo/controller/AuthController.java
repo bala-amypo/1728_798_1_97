@@ -32,10 +32,11 @@ public class AuthController {
                 .build();
         return userService.register(user);
     }
-
-    @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
+@PostMapping("/login")
+public AuthResponse login(@RequestBody AuthRequest request) {
+    try {
         User user = userService.findByEmail(request.getEmail());
+
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid credentials");
         }
@@ -48,5 +49,11 @@ public class AuthController {
         String token = jwtUtil.generateToken(claims, user.getEmail());
 
         return new AuthResponse(token, user.getId(), user.getEmail(), user.getRole());
+
+    } catch (ResourceNotFoundException e) {
+        // User not found → treat as invalid login
+        throw new RuntimeException("Invalid credentials");
     }
+}
+
 }
