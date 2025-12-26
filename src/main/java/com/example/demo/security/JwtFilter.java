@@ -30,13 +30,13 @@ public class JwtFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             if (jwtUtil.validateToken(token)) {
-                var jwsClaims = jwtUtil.parseToken(token); // returns Jws<Claims>
-                var claims = jwsClaims.getBody(); // extract Claims
+                String jwsClaims = jwtUtil.parseToken(token); // returns Jws<Claims>
+                String claims = jwsClaims.getBody(); // extract Claims
 
                 String email = claims.get("email", String.class);
                 String role = claims.get("role", String.class);
 
-                var auth = new UsernamePasswordAuthenticationToken(email, null,
+                String auth = new UsernamePasswordAuthenticationToken(email, null,
                         Collections.emptyList());
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
