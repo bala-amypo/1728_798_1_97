@@ -2,7 +2,6 @@ package com.example.demo.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -11,11 +10,22 @@ import java.util.Date;
 import java.util.Map;
 
 @Component
-@RequiredArgsConstructor
 public class JwtUtil {
 
-    private final String secret = "MySuperSecureJWTSecretKeyThatIsAtLeast32Chars";
-    private final long expirationMs = 86400000;
+    private final String secret;
+    private final long expirationMs;
+
+    // No-arg constructor for Spring
+    public JwtUtil() {
+        this.secret = "MySuperSecureJWTSecretKeyThatIsAtLeast32Chars";
+        this.expirationMs = 86400000;
+    }
+
+    // Constructor to satisfy your test
+    public JwtUtil(String secret, long expirationMs) {
+        this.secret = secret;
+        this.expirationMs = expirationMs;
+    }
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
