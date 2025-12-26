@@ -15,7 +15,7 @@ public class StudentController {
     private final StudentService studentService;
 
     @PostMapping
-    public Student addStudent(@RequestBody Student student) {
+    public Student add(@RequestBody Student student) {
         return studentService.addStudent(student);
     }
 
