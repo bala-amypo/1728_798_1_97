@@ -15,12 +15,12 @@ public class TemplateController {
     private final TemplateService templateService;
 
     @PostMapping
-    public CertificateTemplate addTemplate(@RequestBody CertificateTemplate template) {
+    public CertificateTemplate add(@RequestBody CertificateTemplate template) {
         return templateService.addTemplate(template);
     }
 
     @GetMapping
-    public List<CertificateTemplate> getAllTemplates() {
+    public List<CertificateTemplate> list() {
         return templateService.getAllTemplates();
     }
 }

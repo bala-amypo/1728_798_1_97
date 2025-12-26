@@ -15,7 +15,7 @@ public class CertificateController {
     private final CertificateService certificateService;
 
     @PostMapping("/generate/{studentId}/{templateId}")
-    public Certificate generateCertificate(@PathVariable Long studentId,
+    public Certificate generate(@PathVariable Long studentId,
                                            @PathVariable Long templateId) {
         return certificateService.generateCertificate(studentId, templateId);
     }
