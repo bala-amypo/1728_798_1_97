@@ -28,8 +28,9 @@ import java.io.ByteArrayOutputStream;
 public class CertificateServiceImpl implements CertificateService {
 
     private final StudentRepository studentRepository;
-    private final CertificateTemplateRepository templateRepository;
     private final CertificateRepository certificateRepository;
+    private final CertificateTemplateRepository templateRepository;
+
 
     @Override
     public Certificate generateCertificate(Long studentId, Long templateId) {
