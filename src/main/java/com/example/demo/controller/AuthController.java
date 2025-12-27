@@ -43,28 +43,27 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-    try {
-        User user = userService.findByEmail(request.getEmail());
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+        try {
+            User user = userService.findByEmail(request.getEmail());
 
-        if (!userService.getPasswordEncoder().matches(request.getPassword(), user.getPassword())) {
+            // Check password
+            if (!userService.getPasswordEncoder().matches(request.getPassword(), user.getPassword())) {
+                return ResponseEntity.status(401).body(null);
+            }
+
+            // Generate JWT token
+            String token = jwtUtil.generateToken(Map.of(
+                    "email", user.getEmail(),
+                    "role", user.getRole()
+            ), user.getEmail());
+
+            AuthResponse response = new AuthResponse(token, user.getId(), user.getEmail(), user.getRole());
+            return ResponseEntity.ok(response);
+
+        } catch (ResourceNotFoundException e) {
+            // User not found → return 401 Unauthorized
             return ResponseEntity.status(401).body(null);
         }
-
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("email", user.getEmail());
-        claims.put("role", user.getRole());
-
-        String token = jwtUtil.generateToken(claims, user.getEmail());
-
-        AuthResponse response =
-                new AuthResponse(token, user.getId(), user.getEmail(), user.getRole());
-
-        return ResponseEntity.ok(response);
-
-    } catch (ResourceNotFoundException e) {
-        return ResponseEntity.status(401).body(null);
     }
-}
-
 }
